@@ -28,7 +28,7 @@ unsigned char writebuf_counter = 0;
 
 #define LED_GRN 13
 
-char* digitalClockDisplay()
+char* date_to_str()
 {
   static char date[128];
   now();
@@ -51,9 +51,9 @@ void led_toggle()
 void power_sampling()
 {
   static unsigned int current_sampling_counter=0;
-  static float c1k=0.01;
-  static float c3k=1.0; // hack here
-  int tmp=0;
+  static float c1k=1;
+  static float c3k=3; // hack here
+  long tmp=0;
   int ref=511;
   p0=analogRead(0);
   p1=analogRead(1);
@@ -87,7 +87,7 @@ void save()
   float summary[4] = {};
 
   // logging to Serial
-  date = digitalClockDisplay();
+  date = date_to_str();
 
   myFile = SD.open("log.csv", FILE_WRITE);
   if (!myFile) {
@@ -191,7 +191,7 @@ void setup()
     Serial.println("failed!");
     goto halted;
   }
-  myFile.print(digitalClockDisplay());
+  myFile.print(date_to_str());
   myFile.println(String("") + "," + (millis()));
   myFile.flush();
   myFile.close();
